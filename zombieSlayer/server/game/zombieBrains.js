@@ -11,15 +11,16 @@ var followPlayer = function(players){
   var zombieRange = 800;
   players.forEach(p => {
   if (p.x < this.x + zombieRange && p.x > this.x - zombieRange &&
-    p.y < this.y + zombieRange && p.y > this.y - zombieRange &&)
-    //follow code
+    p.y < this.y + zombieRange && p.y > this.y - zombieRange){
+      //follow code
+    }
   });
 }
 
 
-var shamble(){
+var shamble = function(){
   var move = Math.random() * 20;
-  if( move > 5 &7 move <= 10){
+  if( move > 5 && move <= 10){
     this.x += Math.random() * 3;
     this.y += Math.random() * 3;
   }
