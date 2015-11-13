@@ -1,5 +1,7 @@
-function PlayerHandler(){
+function PlayerHandler(gameId){
+  this.gameId = gameId;
   this.userId = Meteor.userId();
+  this.screenName = Meteor.user().username;
   this.color = '#4e00f5';
   this.speed = 1.0;
   this.accel = .3;
