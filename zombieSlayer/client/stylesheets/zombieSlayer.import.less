@@ -1,0 +1,199 @@
+/* http://blog.jetstrap.com/2013/07/less-like-bootstrap/ */
+.navbar-simple .brand {
+ 	padding-top: 15px;
+	padding-bottom: 15px;
+}
+.navbar-simple .navbar-inner {
+	background: #fff;
+	filter: none !important;
+	box-shadow: 0 2px 15px rgba(0,0,0,0.25);
+	-moz-box-shadow: 0 2px 15px rgba(0,0,0,0.25);
+	-webkit-box-shadow: 0 2px 15px rgba(0,0,0,0.25);
+	border-bottom: 1px solid rgba(0,0,0,0.2);
+}
+.navbar-simple .navbar-inner .nav {
+	float: right;
+}
+.navbar-simple .navbar-inner .nav li a {
+	background: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	color: #777;
+	font-size: 13px;
+	padding-top: 15px;
+	padding-bottom: 15px;
+	font-weight: 600;
+}
+.navbar-simple .navbar-inner .nav li a:hover {
+	background: none;
+	-webkit-box-shadow: none;
+	-moz-box-shadow: none;
+	box-shadow: none;
+	color: #bf3604;
+}
+.navbar-simple .navbar-inner .nav li.active a {
+	color: #bf3604;
+}
+
+
+
+
+
+
+@import "vendor/custom.bootstrap.import.less";
+@univ-distance: 24px;
+@trans-dur: .25s;
+
+.col-xs-5ths,
+.col-sm-5ths,
+.col-md-5ths,
+.col-lg-5ths {
+    position: relative;
+    min-height: 1px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.col-xs-5ths {
+    width: 20%;
+    float: left;
+}
+@media (min-width: 768px) {
+.col-sm-5ths {
+        width: 20%;
+        float: left;
+    }
+}
+@media (min-width: 992px) {
+    .col-md-5ths {
+        width: 20%;
+        float: left;
+    }
+}
+@media (min-width: 1200px) {
+    .col-lg-5ths {
+        width: 20%;
+        float: left;
+    }
+}
+
+.btn, .form-control {
+  border-radius: 0px;
+}
+
+.universal-margin {
+  margin: 20px 20px 20px;
+}
+
+.game-name {
+  text-align: center;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-size: 40px;
+  letter-spacing: 15px;
+}
+
+.delete {
+  float: right;
+  background: none;
+  border: none;
+  position: relative;
+  &:hover {
+    color: red;
+  }
+  &:focus {
+    outline:0;
+  }
+}
+
+.new-game-form {
+  margin-bottom: @univ-distance;
+
+  h2 {
+    text-align: center;
+  }
+}
+
+a, a div{
+  text-decoration: none;
+  color: @gray-dark;
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+// .animate { /* this on is more specific */
+//   -o-transition: color @trans-dur ease-in, background @trans-dur ease-in;
+//   -ms-transition: color @trans-dur ease-in, background @trans-dur ease-in;
+//   -moz-transition: color @trans-dur ease-in, background @trans-dur ease-in;
+//   -webkit-transition: color @trans-dur ease-in, background @trans-dur ease-in;
+//   /* ...and now override with proper CSS property */
+//   transition: color @trans-dur ease-in, background @trans-dur ease-in;
+// }
+
+.animate {
+  -o-transition: all @trans-dur ease-in;
+  -ms-transition: all @trans-dur ease-in;
+  -moz-transition: all @trans-dur ease-in;
+  -webkit-transition: all @trans-dur ease-in;
+  transition: all @trans-dur ease-in;
+}
+
+.btn {
+  .animate;
+}
+
+@game-box-height: 200px;
+.games-list {
+  background-color: @gray-lighter;
+  padding-top: @univ-distance;
+  .no-games {
+    color: @gray-light;
+    text-align: center;
+    font-size: 42px;
+    font-weight: lighter;
+    padding-bottom: 20px;
+  }
+  .game-box {
+    position: relative;
+    display: block;
+    height: @game-box-height;
+    margin-bottom: @univ-distance;
+    padding: 20px;
+    background:white;
+    border-color: white;
+    .animate;
+    * {
+      .animate;
+    }
+    &:hover {
+      background: @gray-darker;
+      div {
+        color: white;
+      }
+    }
+    .game-title {
+      text-align: center;
+      font-size: 20px;
+      font-weight: 600;
+    }
+    .spots {
+      font-size: 72px;
+      font-weight: bold;
+      display: flex;
+      justify-content: center; /* align horizontal */
+      align-items: center; /* align vertical */
+      height: @game-box-height / 2;
+      letter-spacing: 10px;
+    }
+    .bottom-content {
+      position: absolute;
+      bottom: @univ-distance;
+    }
+  }
+}
+
+/*html, body, button, input, textarea, select {
+  font-family: 'Source Sans Pro', "Helvetica Neue", Helvetica, Arial, sans-serif;
+}*/

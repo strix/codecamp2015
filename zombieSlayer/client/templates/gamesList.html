@@ -1,0 +1,21 @@
+<template name="gamesList">
+  <div class="row games-list">
+    {{#if Template.subscriptionsReady}}
+      {{#if gameCount}}
+        {{#each games}}
+          <div class="col-md-5ths">
+            {{> game}}
+          </div>
+        {{/each}}
+      {{else}}
+      <div class="col-md-12">
+        <div class="no-games">No games available. Sign in to create one.</div>
+      </div>
+      {{/if}}
+    {{else}}
+      <div class="loading">
+        Loading…
+      </div>
+    {{/if}}
+  </div>
+</template>

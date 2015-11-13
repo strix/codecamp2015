@@ -1,0 +1,15 @@
+<template name="game">
+  <a href="/{{_id}}">
+    <div class="game-box">
+      <div class="game-title">
+        {{title}}{{#if isOwner}}<button class="delete">&times;</button>{{/if}}
+      </div>
+      <div class="spots">
+        {{activePlayers}}/{{numPlayers}}
+      </div>
+      <div class="bottom-content">
+        Creator: {{username}}
+      </div>
+    </div>
+  </a>
+</template>

@@ -1,0 +1,42 @@
+<template name="createGameForm">
+  <div class="new-game-form">
+    {{#if currentUser}}
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Create a New Game</h2>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-2 col-md-offset-5">
+          <form class="new-game">
+            <div class="form-group">
+              <label for="gameTitle">Game Title</label>
+              <input type="text" class="form-control" name="gameTitle" placeholder="game title">
+            </div>
+            <div class="form-group">
+              <label for="numPlayers">Number of Players:</label>
+              <select name="numPlayers" class="form-control">
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </div>
+            <div class="checkbox">
+              <label>
+                <input type="checkbox" name="private"> Private
+              </label>
+            </div>
+            <button type="submit" class="btn btn-success">Create Game</button>
+          </form>
+        </div>
+      </div>
+    {{else}}
+      <div class="row">
+        <div class="col-md-12">
+          <h2>Sign in to create a game.</h2>
+        </div>
+      </div>
+    {{/if}}
+  </div>
+</template>
