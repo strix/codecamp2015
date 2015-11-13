@@ -7,6 +7,10 @@ Meteor.publish("games", function () {
   });
 });
 
+Meteor.publish('players', function(){
+  return Players.find();
+});
+
 Meteor.publish('gameplayers', function(){
   return GamePlayers.find();
 });
