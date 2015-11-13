@@ -2,15 +2,35 @@
 Meteor.gameFunctions = {
     startGame() {
       console.log("startgame");
-      canvas = document.getElementById("canvas");
-      ctx = canvas.getContext('2d');
-      ctx.clearRect(0,0,800,800);
-      GamePlayers.find({'game': Session.get('currentGame')}).fetch().forEach(function(i){
-        ctx.beginPath();
-        ctx.fillStyle = i.color;
-        ctx.arc(i.x, i.y, i.r, 0, Math.PI*2, false);
-        ctx.fill();
-        ctx.fillText(i.screenName, i.x-i.r, i.y-15);
-    });
+  },
+  Controls(main) {
+      window.addEventListener("keydown", function(e) {
+       switch(e.keyCode) {
+         case 37:
+           Meteor.call('LEFTd'); break;
+         case 38:
+           Meteor.call('UPd'); break;
+         case 39:
+           Meteor.call('RIGHTd'); break;
+         case 40:
+           Meteor.call('DOWNd'); break;
+       }
+      });
+      window.addEventListener("keyup", function(e) {
+       switch(e.keyCode) {
+         case 37:
+           Meteor.call('LEFTu'); break;
+         case 38:
+           Meteor.call('UPu'); break;
+         case 39:
+           Meteor.call('RIGHTu'); break;
+         case 40:
+           Meteor.call('DOWNu'); break;
+       }
+      });
+      //this.canvas.addEventListener('mousedown', this.mouseDownEvent.bind(this));
+      //this.canvas.addEventListener('mouseup', this.mouseUpEvent.bind(this));
+      //window.addEventListener('mousemove', this.mouseMoveEvent.bind(this));
+      //this.canvas.addEventListener('contextmenu', this.contextMenuEvent.bind(this));
   }
 }

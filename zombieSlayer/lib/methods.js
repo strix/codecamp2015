@@ -44,9 +44,48 @@ Meteor.methods({
       screenName: Meteor.user().username,
       x: genRandom(),
       y: genRandom(),
+      xdir: 0,
+      ydir: 0,
       r: 10,
       color: 'black'
     });
+  },
+  //keydown events
+  LEFTd(){
+    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
+    GamePlayers.update({player: playerId}, {$set: {xdir: -1}})
+  },
+  RIGHTd(){
+    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
+    GamePlayers.update({player: playerId}, {$set: {xdir: 1}})
+  },
+  UPd(){
+    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
+    GamePlayers.update({player: playerId}, {$set: {ydir: -1}})
+  },
+  DOWNd(){
+    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
+    GamePlayers.update({player: playerId}, {$set: {ydir: 1}})
+  },
+  //keyup events
+  LEFTu(){
+    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
+    GamePlayers.update({player: playerId}, {$set: {xdir: 0}})
+  },
+  RIGHTu(){
+    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
+    GamePlayers.update({player: playerId}, {$set: {xdir: 0}})
+  },
+  UPu(){
+    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
+    GamePlayers.update({player: playerId}, {$set: {ydir: 0}})
+  },
+  DOWNu(){
+    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
+    GamePlayers.update({player: playerId}, {$set: {ydir: 0}})
+  },
+  updatePlayer(i, xpos, ypos){
+    GamePlayers.update({playerId: i.playerId}, {$set: {x: xpos, y: ypos}});
   },
   addPlayer(){
     if (! Meteor.userId()) {
