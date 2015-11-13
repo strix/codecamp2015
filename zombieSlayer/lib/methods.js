@@ -40,11 +40,43 @@ Meteor.methods({
     }
     GamePlayers.insert({
       game: gameId,
+      userId: Meteor.userId(),
       screenName: Meteor.user().username,
       x: genRandom(),
       y: genRandom(),
+      xdir: 0,
+      ydir: 0,
       r: 10,
       color: 'black'
     });
+  },
+  //keydown events
+  LEFTd(){
+    GamePlayers.update({userId: Meteor.userId()}, {$set: {xdir: -1}})
+  },
+  RIGHTd(){
+    GamePlayers.update({userId: Meteor.userId()}, {$set: {xdir: 1}})
+  },
+  UPd(){
+    GamePlayers.update({userId: Meteor.userId()}, {$set: {ydir: -1}})
+  },
+  DOWNd(){
+    GamePlayers.update({userId: Meteor.userId()}, {$set: {ydir: 1}})
+  },
+  //keyup events
+  LEFTu(){
+    GamePlayers.update({userId: Meteor.userId()}, {$set: {xdir: 0}})
+  },
+  RIGHTu(){
+    GamePlayers.update({userId: Meteor.userId()}, {$set: {xdir: 0}})
+  },
+  UPu(){
+    GamePlayers.update({userId: Meteor.userId()}, {$set: {ydir: 0}})
+  },
+  DOWNu(){
+    GamePlayers.update({userId: Meteor.userId()}, {$set: {ydir: 0}})
+  },
+  updatePlayer(i, xpos, ypos){
+    GamePlayers.update({userId: i.userId}, {$set: {x: xpos, y: ypos}});
   }
 });
