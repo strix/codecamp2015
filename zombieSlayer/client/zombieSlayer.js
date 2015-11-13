@@ -58,6 +58,19 @@ Accounts.ui.config({
 
 Template.newGame.rendered = () => {
   console.log('here');
-  Meteor.call('joinPlayer', Session.get('currentGame'));
+  let playerExists = Players.find({'userId': Meteor.userId()}).count() > 0;
+  // let player = Players.findOne({'userId': Meteor.userId()}, function(err, result){
+  //   if(err){
+  //     console.log(err);
+  //   }
+  //   if(result){
+  //     console.log(result);
+  //   }
+  // });
+  if(!playerExists){
+    Meteor.call('addPlayer');
+  }
+  let playerId = Players.find({'userId': Meteor.userId()}).fetch()[0]._id;
+  Meteor.call('joinPlayer', Session.get('currentGame'), playerId);
   Meteor.gameFunctions.startGame();
 };

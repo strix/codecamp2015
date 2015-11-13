@@ -33,18 +33,35 @@ Meteor.methods({
 
     Games.remove(gameId);
   },
-  joinPlayer(gameId){
+  joinPlayer(gameId, playerId){
     if (! Meteor.userId()) {
       sAlert.error("Yo fool.  You can't do that shiz.");
       throw new Meteor.Error("not-authorized");
     }
     GamePlayers.insert({
       game: gameId,
+      player: playerId,
       screenName: Meteor.user().username,
       x: genRandom(),
       y: genRandom(),
       r: 10,
       color: 'black'
+    });
+  },
+  addPlayer(){
+    if (! Meteor.userId()) {
+      sAlert.error("Yo fool.  You can't do that shiz.");
+      throw new Meteor.Error("not-authorized");
+    }
+    console.log('ADDING PLAYER!!!');
+    Players.insert({
+      userId: Meteor.userId(),
+      zKills: 0,
+      pKills: 0,
+      zDeaths: 0,
+      pDeaths: 0,
+      color: 'black',
+      friends: []
     });
   }
 });
