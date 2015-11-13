@@ -3,7 +3,7 @@ function genRandom(range) {
 }
 
 Meteor.methods({
-  createGame(gameTitle, numPlayers, privateGame) {
+  createGame(gameTitle, numPlayers = 2, privateGame = false) {
     if (! Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
