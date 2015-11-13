@@ -1,4 +1,4 @@
-function playerHandler(){
+function PlayerHandler(){
   this.userId = Meteor.userId();
   this.color = '#4e00f5';
   this.speed = 1.0;
