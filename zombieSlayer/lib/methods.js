@@ -3,7 +3,7 @@ function genRandom(range) {
 }
 
 Meteor.methods({
-  createGame(gameTitle, numPlayers, privateGame) {
+  createGame(gameTitle, numPlayers = 2, privateGame = false) {
     if (! Meteor.userId()) {
       throw new Meteor.Error("not-authorized");
     }
@@ -27,6 +27,7 @@ Meteor.methods({
     let game = Games.findOne(gameId);
     if (game.private && game.owner !== Meteor.userId()) {
       // If the game is private, make sure only the owner can delete it
+      sAlert.error("Yo fool.  You can't do that shiz.");
       throw new Meteor.Error("not-authorized");
     }
 
@@ -34,6 +35,7 @@ Meteor.methods({
   },
   joinPlayer(gameId){
     if (! Meteor.userId()) {
+      sAlert.error("Yo fool.  You can't do that shiz.");
       throw new Meteor.Error("not-authorized");
     }
     GamePlayers.insert({
