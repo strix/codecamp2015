@@ -46,6 +46,8 @@ Meteor.methods({
       y: genRandom(),
       xdir: 0,
       ydir: 0,
+      mx: 0,
+      my: 0,
       r: 10,
       color: 'black',
       hp: 100
@@ -80,11 +82,33 @@ Meteor.methods({
   DOWNu(gpId){
     GamePlayers.update(gpId, {$set: {ydir: 0}});
   },
-
+  mouseUpdate(gpId, x, y){
+    GamePlayers.update(gpId, {$set: {mx: x}}, {$set: {my: y}});
+    //console.log(x);
+  },
+  mouseUp(gpId, currentGame){
+    console.log("fired a shot!");
+    //instatiate a bullet here
+    s = 6;
+    angle = Math.atan2(GamePlayers.findOne(gpId).my - GamePlayers.findOne(gpId).y, GamePlayers.findOne(gpId).mx - GamePlayers.findOne(gpId).x);
+    Bullets.insert({
+      color: "#e40b0b",
+      r: 3,
+      damage: 5,
+      speed: s,
+      x: GamePlayers.findOne(gpId).x,
+      y: GamePlayers.findOne(gpId).y,
+      vx: Math.cos(angle) * s,
+      vy: Math.sin(angle) * s,
+      game: currentGame,
+      ownerId: gpId
+    });
+  },
   updatePlayer(gpId, xpos, ypos){
-
-
     GamePlayers.update(gpId, {$set: {x: xpos, y: ypos}});
+  },
+  updateBullet(gpId, xpos, ypos){
+    Bullets.update(gpId, {$set: {x: xpos, y: ypos}});
   },
   addPlayer(){
     if (! Meteor.userId()) {
