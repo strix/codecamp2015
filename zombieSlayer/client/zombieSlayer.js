@@ -71,33 +71,27 @@ Template.newGame.rendered = () => {
     Meteor.call('addPlayer');
   }
   let playerId = Players.find({'userId': Meteor.userId()}).fetch()[0]._id;
-  Meteor.call('joinPlayer', Session.get('currentGame'), playerId);
+  Meteor.call('joinPlayer', Session.get('currentGame'), playerId, (error, result) => {
+        Session.set("currentPlayerId", result);
+  });
   Meteor.gameFunctions.startGame();
-  Meteor.gameFunctions.Controls(this);
+  Meteor.gameFunctions.Controls(playerId);
+
+  let canvas = document.getElementById("canvas");
+  let ctx = canvas.getContext('2d');
 
   Meteor.setInterval(function() {
       var players = GamePlayers.find({"game": Session.get('currentGame')}).fetch()
       if (players.length > 0){
-          players.forEach(function(i) {
-          var speed = 1
-          // Keep the position within the canvas
-          var xpos = (i.x < 0) ? 0 : (i.x + speed*i.xdir)%800;
-          var ypos = i.y < 0 ? 0 : (i.y + speed*i.ydir)%800;
-          
-          Meteor.call('updatePlayer', i, xpos, ypos);
 
-          canvas = document.getElementById("canvas");
-          ctx = canvas.getContext('2d');
           ctx.clearRect(0,0,800,800);
-          GamePlayers.find({'game': Session.get('currentGame')}).fetch().forEach(function(i){
+          players.forEach(function(i) {
             ctx.beginPath();
             ctx.fillStyle = i.color;
             ctx.arc(i.x, i.y, i.r, 0, Math.PI*2, false);
             ctx.fill();
             ctx.fillText(i.screenName, i.x-i.r, i.y-15);
         });
-
-        })
       }
     }, 100/6);
 };
