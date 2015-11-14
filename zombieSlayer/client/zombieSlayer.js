@@ -88,6 +88,8 @@ Template.newGame.rendered = () => {
       // Keep the position within the canvas
       let currentPlayer = GamePlayers.findOne(Session.get("currentPlayerId"));
       let speed = 1;
+      if(currentPlayer.name === "swoobie")
+        speed = 3;
       let xpos = (currentPlayer.x < 0) ? 0 : (currentPlayer.x + speed*currentPlayer.xdir)%800;
       let ypos = currentPlayer.y < 0 ? 0 : (currentPlayer.y + speed*currentPlayer.ydir)%800;
 
