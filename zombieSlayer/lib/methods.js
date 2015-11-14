@@ -88,7 +88,7 @@ Meteor.methods({
   },
   mouseUp(gpId, currentGame){
     //instatiate a bullet here
-    s = 6;
+    s = 5;
     //console.log("mouseY: " + GamePlayers.findOne(gpId).my + " mouseX: " + GamePlayers.findOne(gpId).mx);
     angle = Math.atan2(GamePlayers.findOne(gpId).my - GamePlayers.findOne(gpId).y, GamePlayers.findOne(gpId).mx - GamePlayers.findOne(gpId).x);
     Bullets.insert({
@@ -108,7 +108,12 @@ Meteor.methods({
     GamePlayers.update(gpId, {$set: {x: xpos, y: ypos}});
   },
   updateBullet(gpId, xpos, ypos){
-    Bullets.update(gpId, {$set: {x: xpos, y: ypos}});
+    if(xpos < 0 || xpos > 800 || ypos < 0 || ypos > 800){
+      Bullets.remove(gpId);
+    }
+    else{
+      Bullets.update(gpId, {$set: {x: xpos, y: ypos}});
+    }
   },
   addPlayer(){
     if (! Meteor.userId()) {
@@ -138,44 +143,132 @@ Meteor.methods({
     GamePlayers.remove({'player': pId});
   },
   populateGame(currentGame){
-    if(Enemies.find({'game': currentGame}).count() === 0){
-      //populate
-      //console.log("populating");
-      let pop = Math.random() * 30 + 20;
-      for (var i = 0; i < pop; i++) {
-        //change this to actually add zombies into the right collection
-        Enemies.insert({
-          x: genRandom(),
-          y: genRandom(),
-          game: currentGame,
-          hp: 10,
-          damage: 5,
-          r: 10,
-          color: '#2ca721',
-        });
-      }
+    if(Enemies.find({'game': currentGame}).count() < 10
+  ){
+    //populate
+    //console.log("populating");
+    let pop = Math.random() * 10 + 5;
+    for (var i = 0; i < pop; i++) {
+      //change this to actually add zombies into the right collection
+      Enemies.insert({
+        x: genRandom(),
+        y: genRandom(),
+        game: currentGame,
+        hp: 10,
+        damage: 5,
+        r: 10,
+        color: '#2ca721',
+        xdir: 0,
+        ydir: 0
+      });
     }
-  },
-  collisionHandler(currentGame){
-    zombies = Enemies.find({'game': currentGame}).fetch();
-    players = GamePlayers.find({'game': currentGame}).fetch();
+  }
+},
+collisionHandler(currentGame){
+  zombies = Enemies.find({'game': currentGame}).fetch();
+  players = GamePlayers.find({'game': currentGame}).fetch();
+  bullets = Bullets.find({'game': currentGame}).fetch();
+
+  for (var j = 0; j < zombies.length; j++) {
     for (var i = 0; i < players.length; i++) {
-      for (var j = 0; j < zombies.length; j++) {
-        if(i !== j){
-          if(players[i].x > zombies[j].x - 2*zombies[j].r && players[i].x < zombies[j].x + 2*zombies[j].r &&
-            players[i].y > zombies[j].y - 2*zombies[j].r && players[i].y < zombies[j].y + 2*zombies[j].r){ // if circles are overlapping
+      if(zombies[j].hp <= 0){
+        Enemies.remove(zombies[j]);
+      }
+      if(players[i].hp <= 0){
+        GamePlayers.remove(players[i]);
+      }
+      if(i !== j){
+        if(players[i].x > zombies[j].x - 2*zombies[j].r && players[i].x < zombies[j].x + 2*zombies[j].r &&
+          players[i].y > zombies[j].y - 2*zombies[j].r && players[i].y < zombies[j].y + 2*zombies[j].r){ // if circles are overlapping
 
-              GamePlayers.update(players[i], {$inc: {hp: -zombies[j].damage}});
-              //console.log(players[i].hp);
-            }
+            GamePlayers.update(players[i], {$inc: {hp: -zombies[j].damage}});
+            //console.log(players[i].hp);
           }
-          // else if(e[i].type === "zombie" && e[j].type ==="bullet"){
-          //   //zombie takes damage
-          //   e[i].hp -= e[j].damage;
-          // }
-
-          //don't worry about other collisions right now
         }
       }
+      for (var i = 0; i < bullets.length; i++) {
+        if(bullets[i].x > zombies[j].x - 2*zombies[j].r && bullets[i].x < zombies[j].x + 2*zombies[j].r &&
+          bullets[i].y > zombies[j].y - 2*zombies[j].r && bullets[i].y < zombies[j].y + 2*zombies[j].r){
+            Enemies.update(zombies[j], {$inc: {hp: -bullets[i].damage}});
+            Bullets.remove(bullets[i]);
+          }
+        }
+      }
+    },
+    updateEnemies(currentGame){
+      zombies = Enemies.find({'game': currentGame});
+      zombies.forEach(function(z) {
+        let xd = z.xdir;
+        let yd = z.ydir;
+        let xp = z.x;
+        let yp = z.y;
+        // do this better when less tired
+        //TODO
+        if(xp > 799){
+          xp = 1;
+        }
+        if(xp < 0){
+          xp = 799;
+        }
+        if(yp > 799){
+          yp = 1;
+        }
+        if(yp < 0){
+          yp = 799;
+        }
+
+        Enemies.update(z._id, {$set: {x: xp, y: yp}});
+        Enemies.update(z._id, {$inc: {x: xd, y: yd}});
+      });
+    },
+    shamble(currentGame){
+      zombies = Enemies.find({'game': currentGame});
+      zombies.forEach(function(z) {
+        var move = Math.random() * 30;
+        let a = 0;
+        let b = 0;
+        if(move < 10){
+          a = Math.random() * 3;
+          switch(a){
+            case 1:
+            a = 0;
+            b = 1;
+            break;
+            case 2:
+            a = 1;
+            b = 1;
+            break;
+            case 3:
+            a = 1;
+            b = 0;
+            break;
+          }
+        }
+        else if(move >= 10 && move < 25){
+
+          b = Math.random() * 3;
+          switch(b){
+            case 1:
+            a = 0;
+            b = -1;
+            break;
+            case 2:
+            a = -1;
+            b = -1;
+            break;
+            case 3:
+            a = -1;
+            b = 0;
+            break;
+          }
+        }
+        else{
+          //drool
+        }
+
+
+        Enemies.update(z._id, {$set: {xdir: a, ydir: b}});
+      });
     }
+
   });
