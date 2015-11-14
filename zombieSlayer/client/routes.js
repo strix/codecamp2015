@@ -9,6 +9,10 @@ Router.route('/', function () {
 });
 
 Router.route('/:game', function () {
+  if (! Meteor.userId()) {
+    sAlert.error('You need to be logged in to join a game.');
+    return false;
+  }
   Session.set('currentGame', this.params.game);
   this.render('newGame');
 });
