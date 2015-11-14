@@ -94,6 +94,10 @@ Accounts.ui.config({
 
 Template.newGame.rendered = () => {
   console.log('here');
+  
+  let canvas = document.getElementById("canvas");
+  let ctx = canvas.getContext('2d');
+
   Meteor.call('joinPlayer', Session.get('currentGame'), Session.get('playerId'), (error, result) => {
     defaultErrorHandler(error);
     Session.set("currentPlayerId", result);
@@ -101,12 +105,10 @@ Template.newGame.rendered = () => {
     sAlert.success(`${gp} has joined the game.`);
   });
   Meteor.gameFunctions.startGame();
-  Meteor.gameFunctions.Controls(Session.get('playerId'));
+  Meteor.gameFunctions.Controls(Session.get('playerId'), canvas);
 
   Meteor.call('populateGame', Session.get('currentGame'));
 
-  let canvas = document.getElementById("canvas");
-  let ctx = canvas.getContext('2d');
 
   Meteor.setInterval(function() {
       let players = GamePlayers.find({"game": Session.get('currentGame')}).fetch();
@@ -123,8 +125,8 @@ Template.newGame.rendered = () => {
       if(currentPlayer.screenName === 'strix'){
         speed = 10;
       }
-      let xpos = (currentPlayer.x < 0) ? 0 : (currentPlayer.x + speed*currentPlayer.xdir)%800;
-      let ypos = currentPlayer.y < 0 ? 0 : (currentPlayer.y + speed*currentPlayer.ydir)%800;
+      let xpos = (currentPlayer.x < 0) ? 800 : (currentPlayer.x + speed*currentPlayer.xdir)%800;
+      let ypos = currentPlayer.y < 0 ? 800 : (currentPlayer.y + speed*currentPlayer.ydir)%800;
 
       Meteor.call('updatePlayer', Session.get('currentPlayerId'), xpos, ypos, (error, result) => {
         defaultErrorHandler(error);
@@ -149,6 +151,28 @@ Template.newGame.rendered = () => {
         ctx.fill();
         ctx.fillText("zombie", j.x-j.r, j.y-15);
       });
+
+      let bullets = Bullets.find({"game": Session.get('currentGame')});
+      bullets.forEach(function(k) {
+        //console.log("drwain zoambie");
+        ctx.beginPath();
+        ctx.fillStyle = k.color;
+        ctx.arc(k.x, k.y, k.r, 0, Math.PI*2, false);
+        ctx.fill();
+
+        bx = k.x + k.vx;
+        by = k.y + k.vy;
+        if(bx < 0 || by < 0 || bx > 800 | by > 800){
+
+          console.log("before " + Bullets.find().count());
+          Bullets.remove(k);
+          console.log("after " + Bullets.find().count());
+        }
+        else{
+          Meteor.call('updateBullet',k._id, bx, by);
+        }
+      });
+
     }
   }, 100/6);
 
