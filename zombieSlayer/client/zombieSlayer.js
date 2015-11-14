@@ -77,6 +77,8 @@ Template.newGame.rendered = () => {
   Meteor.gameFunctions.startGame();
   Meteor.gameFunctions.Controls(Session.get('playerId'));
 
+  Meteor.call('populateGame', Session.get('currentGame'));
+
   let canvas = document.getElementById("canvas");
   let ctx = canvas.getContext('2d');
 
@@ -88,6 +90,7 @@ Template.newGame.rendered = () => {
       // Keep the position within the canvas
       let currentPlayer = GamePlayers.findOne(Session.get("currentPlayerId"));
       let speed = 3;
+
       if(currentPlayer.screenName === "swoobie"){
         speed = 5;
       }
@@ -108,6 +111,20 @@ Template.newGame.rendered = () => {
         ctx.fill();
         ctx.fillText(i.screenName, i.x-i.r, i.y-15);
       });
+
+      let enemies = Enemies.find({"game": Session.get('currentGame')});
+      enemies.forEach(function(j) {
+        //console.log("drwain zoambie");
+        ctx.beginPath();
+        ctx.fillStyle = j.color;
+        ctx.arc(j.x, j.y, j.r, 0, Math.PI*2, false);
+        ctx.fill();
+        ctx.fillText("zombie", j.x-j.r, j.y-15);
+      });
     }
   }, 100/6);
+
+  Meteor.setInterval(function(){
+    Meteor.call('collisionHandler', Session.get('currentGame'));
+  }, 250);
 };
