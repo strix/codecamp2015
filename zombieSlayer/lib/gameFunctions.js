@@ -30,11 +30,9 @@ Meteor.gameFunctions = {
       });
       //this.canvas.addEventListener('mousedown', this.mouseDownEvent.bind(this));
       canvas.addEventListener('mouseup', function(e){
-        Meteor.call("mouseUp", Session.get("currentPlayerId"), Session.get("currentGame"));
-      });
-      canvas.addEventListener('mousemove', function(e) {
-        let rect = canvas.getBoundingClientRect();
-       Meteor.call('mouseUpdate', Session.get("currentPlayerId"), e.clientX - rect.left, e.clientY - rect.top);
+
+          let rect = canvas.getBoundingClientRect();
+        Meteor.call("mouseUp", Session.get("currentPlayerId"), Session.get("currentGame"), e.clientY - rect.top, e.clientX - rect.left);
       });
       //this.canvas.addEventListener('contextmenu', this.contextMenuEvent.bind(this));
   }

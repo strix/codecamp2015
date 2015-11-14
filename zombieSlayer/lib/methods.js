@@ -80,15 +80,11 @@ Meteor.methods({
   DOWNu(gpId){
     GamePlayers.update(gpId, {$set: {ydir: 0}});
   },
-  mouseUpdate(gpId, x, y){
-    GamePlayers.update(gpId, {$set: {mx: x, my: y}});
-    //console.log(x);
-  },
-  mouseUp(gpId, currentGame){
+
+  mouseUp(gpId, currentGame, ey, ex){
     //instatiate a bullet here
     s = 5;
-    //console.log("mouseY: " + GamePlayers.findOne(gpId).my + " mouseX: " + GamePlayers.findOne(gpId).mx);
-    angle = Math.atan2(GamePlayers.findOne(gpId).my - GamePlayers.findOne(gpId).y, GamePlayers.findOne(gpId).mx - GamePlayers.findOne(gpId).x);
+    angle = Math.atan2(ey - GamePlayers.findOne(gpId).y, ex - GamePlayers.findOne(gpId).x);
     Bullets.insert({
       color: "#e40b0b",
       r: 3,
