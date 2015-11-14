@@ -3,29 +3,29 @@ Meteor.gameFunctions = {
     startGame() {
       console.log("startgame");
   },
-  Controls(main) {
+  Controls(playerId) {
       window.addEventListener("keydown", function(e) {
        switch(e.keyCode) {
          case 37:
-           Meteor.call('LEFTd'); break;
+           Meteor.call('LEFTd', Session.get("currentPlayerId")); break;
          case 38:
-           Meteor.call('UPd'); break;
+           Meteor.call('UPd', Session.get("currentPlayerId")); break;
          case 39:
-           Meteor.call('RIGHTd'); break;
+           Meteor.call('RIGHTd', Session.get("currentPlayerId")); break;
          case 40:
-           Meteor.call('DOWNd'); break;
+           Meteor.call('DOWNd', Session.get("currentPlayerId")); break;
        }
       });
       window.addEventListener("keyup", function(e) {
        switch(e.keyCode) {
          case 37:
-           Meteor.call('LEFTu'); break;
+           Meteor.call('LEFTu', Session.get("currentPlayerId")); break;
          case 38:
-           Meteor.call('UPu'); break;
+           Meteor.call('UPu', Session.get("currentPlayerId")); break;
          case 39:
-           Meteor.call('RIGHTu'); break;
+           Meteor.call('RIGHTu', Session.get("currentPlayerId")); break;
          case 40:
-           Meteor.call('DOWNu'); break;
+           Meteor.call('DOWNu', Session.get("currentPlayerId")); break;
        }
       });
       //this.canvas.addEventListener('mousedown', this.mouseDownEvent.bind(this));

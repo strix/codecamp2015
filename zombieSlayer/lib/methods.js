@@ -38,7 +38,7 @@ Meteor.methods({
       sAlert.error("Yo fool.  You can't do that shiz.");
       throw new Meteor.Error("not-authorized");
     }
-    GamePlayers.insert({
+    let gpId = GamePlayers.insert({
       game: gameId,
       player: playerId,
       screenName: Meteor.user().username,
@@ -49,44 +49,43 @@ Meteor.methods({
       r: 10,
       color: 'black'
     });
+
+    return gpId;
   },
   //keydown events
-  LEFTd(){
-    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
-    GamePlayers.update({player: playerId}, {$set: {xdir: -1}})
+  LEFTd(gpId){
+    GamePlayers.update(gpId, {$set: {xdir: -1}});
   },
-  RIGHTd(){
-    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
-    GamePlayers.update({player: playerId}, {$set: {xdir: 1}})
+  RIGHTd(gpId){
+    GamePlayers.update(gpId, {$set: {xdir: 1}});
   },
-  UPd(){
-    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
-    GamePlayers.update({player: playerId}, {$set: {ydir: -1}})
+  UPd(gpId){
+    GamePlayers.update(gpId, {$set: {ydir: -1}});
   },
-  DOWNd(){
-    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
-    GamePlayers.update({player: playerId}, {$set: {ydir: 1}})
+  DOWNd(gpId){
+    GamePlayers.update(gpId, {$set: {ydir: 1}});
   },
+
   //keyup events
-  LEFTu(){
-    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
-    GamePlayers.update({player: playerId}, {$set: {xdir: 0}})
+  LEFTu(gpId){
+    GamePlayers.update(gpId, {$set: {xdir: 0}});
   },
-  RIGHTu(){
-    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
-    GamePlayers.update({player: playerId}, {$set: {xdir: 0}})
+  RIGHTu(gpId){
+    GamePlayers.update(gpId, {$set: {xdir: 0}});
   },
-  UPu(){
-    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
-    GamePlayers.update({player: playerId}, {$set: {ydir: 0}})
+  UPu(gpId){
+    GamePlayers.update(gpId, {$set: {ydir: 0}});
   },
-  DOWNu(){
-    playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
-    GamePlayers.update({player: playerId}, {$set: {ydir: 0}})
+  DOWNu(gpId){
+    GamePlayers.update(gpId, {$set: {ydir: 0}});
   },
-  updatePlayer(i, xpos, ypos){
-    GamePlayers.update({playerId: i.playerId}, {$set: {x: xpos, y: ypos}});
+
+  updatePlayer(gpId, xpos, ypos){
+
+
+    GamePlayers.update(gpId, {$set: {x: xpos, y: ypos}});
   },
+
   addPlayer(){
     if (! Meteor.userId()) {
       sAlert.error("Yo fool.  You can't do that shiz.");
