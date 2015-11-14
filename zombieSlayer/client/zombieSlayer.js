@@ -149,5 +149,5 @@ Template.newGame.rendered = () => {
 
   Meteor.setInterval(function(){
     Meteor.call('collisionHandler', Session.get('currentGame'));
-  }, 150);
+  }, 250);
 };

@@ -48,7 +48,7 @@ Meteor.methods({
       ydir: 0,
       mx: 0,
       my: 0,
-      r: 20,
+      r: 10,
       color: 'black',
       hp: 100
     });
@@ -150,7 +150,7 @@ Meteor.methods({
           game: currentGame,
           hp: 10,
           damage: 5,
-          r: 20,
+          r: 10,
           color: '#2ca721',
         });
       }
@@ -159,13 +159,8 @@ Meteor.methods({
   collisionHandler(currentGame){
     zombies = Enemies.find({'game': currentGame}).fetch();
     players = GamePlayers.find({'game': currentGame}).fetch();
-    bullets = Bullets.find({'game': currentGame}).fetch();
-
-      for (var j = 0; j < zombies.length; j++) {
     for (var i = 0; i < players.length; i++) {
-        if(zombies[j].hp <= 0){
-          Enemies.remove(zombies[j]);
-        }
+      for (var j = 0; j < zombies.length; j++) {
         if(i !== j){
           if(players[i].x > zombies[j].x - 2*zombies[j].r && players[i].x < zombies[j].x + 2*zombies[j].r &&
             players[i].y > zombies[j].y - 2*zombies[j].r && players[i].y < zombies[j].y + 2*zombies[j].r){ // if circles are overlapping
@@ -174,14 +169,12 @@ Meteor.methods({
               //console.log(players[i].hp);
             }
           }
-        }
-        for (var i = 0; i < bullets.length; i++) {
-          if(bullets[i].x > zombies[j].x - 2*zombies[j].r && bullets[i].x < zombies[j].x + 2*zombies[j].r &&
-            bullets[i].y > zombies[j].y - 2*zombies[j].r && bullets[i].y < zombies[j].y + 2*zombies[j].r){
-              Enemies.update(zombies[j], {$inc: {hp: -bullets[i].damage}});
-              Bullets.remove(bullets[i]);
+          // else if(e[i].type === "zombie" && e[j].type ==="bullet"){
+          //   //zombie takes damage
+          //   e[i].hp -= e[j].damage;
+          // }
 
-            }
+          //don't worry about other collisions right now
         }
       }
     }
