@@ -85,7 +85,6 @@ Meteor.methods({
 
     GamePlayers.update(gpId, {$set: {x: xpos, y: ypos}});
   },
-
   addPlayer(){
     if (! Meteor.userId()) {
       sAlert.error("Yo fool.  You can't do that shiz.");
@@ -101,5 +100,26 @@ Meteor.methods({
       color: 'black',
       friends: []
     });
+  },
+  populateGame(currentGame){
+    if(Enemies.find({'game': currentGame}).count() === 0){
+      //populate
+      console.log("populating");
+      let pop = Math.random() * 30 + 20;
+      for (var i = 0; i < pop; i++) {
+        //change this to actually add zombies into the right collection
+        Enemies.insert({
+          x: genRandom(),
+          y: genRandom(),
+          game: currentGame,
+          hp: 10,
+          damage: 5,
+          r: 10,
+          color: '#2ca721',
+        });
+      }
+    }
   }
+
+
 });

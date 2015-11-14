@@ -77,19 +77,19 @@ Template.newGame.rendered = () => {
   Meteor.gameFunctions.startGame();
   Meteor.gameFunctions.Controls(playerId);
 
+  Meteor.call('populateGame', Session.get('currentGame'));
+
   let canvas = document.getElementById("canvas");
   let ctx = canvas.getContext('2d');
 
   Meteor.setInterval(function() {
-      let players = GamePlayers.find({"game": Session.get('currentGame')}).fetch()
+      let players = GamePlayers.find({"game": Session.get('currentGame')}).fetch();
       if (players.length > 0){
 
 
       // Keep the position within the canvas
       let currentPlayer = GamePlayers.findOne(Session.get("currentPlayerId"));
       let speed = 3;
-      if(currentPlayer.name === "swoobie")
-        speed = 5;
       let xpos = (currentPlayer.x < 0) ? 0 : (currentPlayer.x + speed*currentPlayer.xdir)%800;
       let ypos = currentPlayer.y < 0 ? 0 : (currentPlayer.y + speed*currentPlayer.ydir)%800;
 
@@ -104,6 +104,21 @@ Template.newGame.rendered = () => {
         ctx.fill();
         ctx.fillText(i.screenName, i.x-i.r, i.y-15);
       });
+
+      let enemies = Enemies.find({"game": Session.get('currentGame')});
+      enemies.forEach(function(j) {
+        console.log("drwain zoambie");
+        ctx.beginPath();
+        ctx.fillStyle = j.color;
+        ctx.arc(j.x, j.y, j.r, 0, Math.PI*2, false);
+        ctx.fill();
+        ctx.fillText("zombie", j.x-j.r, j.y-15);
+      });
+
     }
   }, 100/6);
+
+  // Meteor.setInterval(function(){
+  //   console.log("test");
+  // }, 1000);
 };
