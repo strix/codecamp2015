@@ -9,6 +9,9 @@
 //     return user.username;
 // });
 GamePlayers = new Mongo.Collection("gameplayers");
+Enemies = new Mongo.Collection("enemies");
+Bullets = new Mongo.Collection("bullets", {connection: null});
+
 
 isKnownError = (error) => {
   let errorName = error && error.error;
@@ -118,13 +121,6 @@ Template.newGame.rendered = () => {
       // Keep the position within the canvas
       let currentPlayer = GamePlayers.findOne(Session.get("currentPlayerId"));
       let speed = 3;
-
-      if(currentPlayer.screenName === "swoobie"){
-        speed = 5;
-      }
-      if(currentPlayer.screenName === 'strix'){
-        speed = 10;
-      }
       let xpos = (currentPlayer.x < 0) ? 800 : (currentPlayer.x + speed*currentPlayer.xdir)%800;
       let ypos = currentPlayer.y < 0 ? 800 : (currentPlayer.y + speed*currentPlayer.ydir)%800;
 
@@ -142,33 +138,26 @@ Template.newGame.rendered = () => {
         ctx.fillText(i.screenName, i.x-i.r, i.y-15);
       });
 
-      let enemies = Enemies.find({"game": Session.get('currentGame')});
+      let enemies = Enemies.find({"game": Session.get('currentGame')}).fetch();
       enemies.forEach(function(j) {
         //console.log("drwain zoambie");
         ctx.beginPath();
         ctx.fillStyle = j.color;
         ctx.arc(j.x, j.y, j.r, 0, Math.PI*2, false);
         ctx.fill();
-        ctx.fillText("zombie", j.x-j.r, j.y-15);
       });
 
-      let bullets = Bullets.find({"game": Session.get('currentGame')});
+      let bullets = Bullets.find({"game": Session.get('currentGame')}).fetch();
       bullets.forEach(function(k) {
         //console.log("drwain zoambie");
         ctx.beginPath();
         ctx.fillStyle = k.color;
         ctx.arc(k.x, k.y, k.r, 0, Math.PI*2, false);
         ctx.fill();
-
-        bx = k.x + k.vx;
-        by = k.y + k.vy;
-        if(bx < 0 || by < 0 || bx > 800 | by > 800){
-
-          console.log("before " + Bullets.find().count());
-          Bullets.remove(k);
-          console.log("after " + Bullets.find().count());
-        }
-        else{
+        //console.log(Bullets.find().count());
+        if(k.ownerId === Session.get('currentPlayerId')){
+          let bx = k.x + k.vx;
+          let by = k.y + k.vy;
           Meteor.call('updateBullet',k._id, bx, by);
         }
       });
@@ -178,5 +167,13 @@ Template.newGame.rendered = () => {
 
   Meteor.setInterval(function(){
     Meteor.call('collisionHandler', Session.get('currentGame'));
-  }, 250);
+  }, 150);
+
+  Meteor.setInterval(function(){
+    Meteor.call('updateEnemies', Session.get('currentGame'));
+  }, 200);
+
+  Meteor.setInterval(function(){
+    Meteor.call('shamble', Session.get('currentGame'));
+  }, 2000);
 };
