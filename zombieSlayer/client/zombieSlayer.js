@@ -97,7 +97,7 @@ Accounts.ui.config({
 
 Template.newGame.rendered = () => {
   console.log('here');
-  
+
   let canvas = document.getElementById("canvas");
   let ctx = canvas.getContext('2d');
 
