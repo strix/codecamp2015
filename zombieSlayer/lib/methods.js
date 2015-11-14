@@ -91,16 +91,27 @@ Meteor.methods({
       sAlert.error("Yo fool.  You can't do that shiz.");
       throw new Meteor.Error("not-authorized");
     }
-    console.log('ADDING PLAYER!!!');
-    Players.insert({
-      userId: Meteor.userId(),
-      zKills: 0,
-      pKills: 0,
-      zDeaths: 0,
-      pDeaths: 0,
-      color: 'black',
-      friends: []
-    });
+    let playerExists = Players.find({'userId': Meteor.userId()}).count() > 0;
+    if(!playerExists){
+      console.log('ADDING PLAYER!!!');
+      let newPlayer = Players.insert({
+        userId: Meteor.userId(),
+        zKills: 0,
+        pKills: 0,
+        zDeaths: 0,
+        pDeaths: 0,
+        color: 'black',
+        friends: []
+      });
+      return newPlayer;
+    } else{
+      console.log('PLAYER ALREADY HERE!!!');
+      let playerId = Players.find({'userId': Meteor.userId()}).fetch()[0]._id;
+      return playerId;
+    }
+  },
+  wipePlayers(pId){
+    GamePlayers.remove({'player': pId});
   },
   populateGame(currentGame){
     if(Enemies.find({'game': currentGame}).count() === 0){
@@ -121,7 +132,6 @@ Meteor.methods({
       }
     }
   },
-
   collisionHandler(currentGame){
     zombies = Enemies.find({'game': currentGame}).fetch();
     players = GamePlayers.find({'game': currentGame}).fetch();
@@ -129,21 +139,19 @@ Meteor.methods({
       for (var j = 0; j < zombies.length; j++) {
         if(i !== j){
           if(players[i].x > zombies[j].x - 2*zombies[j].r && players[i].x < zombies[j].x + 2*zombies[j].r &&
-          players[i].y > zombies[j].y - 2*zombies[j].r && players[i].y < zombies[j].y + 2*zombies[j].r){ // if circles are overlapping
+            players[i].y > zombies[j].y - 2*zombies[j].r && players[i].y < zombies[j].y + 2*zombies[j].r){ // if circles are overlapping
 
               GamePlayers.update(players[i], {$inc: {hp: -zombies[j].damage}});
               console.log(players[i].hp);
             }
           }
-            // else if(e[i].type === "zombie" && e[j].type ==="bullet"){
-            //   //zombie takes damage
-            //   e[i].hp -= e[j].damage;
-            // }
+          // else if(e[i].type === "zombie" && e[j].type ==="bullet"){
+          //   //zombie takes damage
+          //   e[i].hp -= e[j].damage;
+          // }
 
-            //don't worry about other collisions right now
+          //don't worry about other collisions right now
         }
       }
     }
-
-
-});
+  });

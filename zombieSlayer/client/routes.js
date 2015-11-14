@@ -4,6 +4,7 @@ Router.configure({
 });
 
 Router.route('/', function () {
+  Meteor.call('wipePlayers', Session.get('playerId'));
   this.render('home');
 });
 
