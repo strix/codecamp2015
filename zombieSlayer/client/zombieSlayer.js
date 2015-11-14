@@ -87,13 +87,13 @@ Template.newGame.rendered = () => {
 
       // Keep the position within the canvas
       let currentPlayer = GamePlayers.findOne(Session.get("currentPlayerId"));
-      let speed = 1;
+      let speed = 3;
       if(currentPlayer.name === "swoobie")
-        speed = 3;
+        speed = 5;
       let xpos = (currentPlayer.x < 0) ? 0 : (currentPlayer.x + speed*currentPlayer.xdir)%800;
       let ypos = currentPlayer.y < 0 ? 0 : (currentPlayer.y + speed*currentPlayer.ydir)%800;
 
-      Meteor.call('updatePlayer', Session.get('currentPlayerId'), xpos, ypos);
+      Meteor.call('updatePlayer', Session.get('currentPlayerId'), xpos, ypos, (error, result) => {});
 
       ctx.clearRect(0,0,800,800);
 
