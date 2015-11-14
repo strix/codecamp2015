@@ -135,10 +135,9 @@ Template.newGame.rendered = () => {
         bx = k.x + k.vx;
         by = k.y + k.vy;
         if(bx < 0 || by < 0 || bx > 800 | by > 800){
-
-          console.log("before " + Bullets.find().count());
+          //console.log("before " + Bullets.find().count());
           Bullets.remove(k);
-          console.log("after " + Bullets.find().count());
+          //console.log("after " + Bullets.find().count());
         }
         else{
           Meteor.call('updateBullet',k._id, bx, by);

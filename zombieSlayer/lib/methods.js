@@ -83,13 +83,13 @@ Meteor.methods({
     GamePlayers.update(gpId, {$set: {ydir: 0}});
   },
   mouseUpdate(gpId, x, y){
-    GamePlayers.update(gpId, {$set: {mx: x}}, {$set: {my: y}});
+    GamePlayers.update(gpId, {$set: {mx: x, my: y}});
     //console.log(x);
   },
   mouseUp(gpId, currentGame){
-    console.log("fired a shot!");
     //instatiate a bullet here
     s = 6;
+    //console.log("mouseY: " + GamePlayers.findOne(gpId).my + " mouseX: " + GamePlayers.findOne(gpId).mx);
     angle = Math.atan2(GamePlayers.findOne(gpId).my - GamePlayers.findOne(gpId).y, GamePlayers.findOne(gpId).mx - GamePlayers.findOne(gpId).x);
     Bullets.insert({
       color: "#e40b0b",
@@ -98,8 +98,8 @@ Meteor.methods({
       speed: s,
       x: GamePlayers.findOne(gpId).x,
       y: GamePlayers.findOne(gpId).y,
-      vx: Math.cos(angle) * s,
-      vy: Math.sin(angle) * s,
+      vx: Math.cos(angle)  * s,
+      vy: Math.sin(angle)  * s,
       game: currentGame,
       ownerId: gpId
     });
@@ -117,7 +117,7 @@ Meteor.methods({
     }
     let playerExists = Players.find({'userId': Meteor.userId()}).count() > 0;
     if(!playerExists){
-      console.log('ADDING PLAYER!!!');
+      //console.log('ADDING PLAYER!!!');
       let newPlayer = Players.insert({
         userId: Meteor.userId(),
         zKills: 0,
@@ -129,7 +129,7 @@ Meteor.methods({
       });
       return newPlayer;
     } else{
-      console.log('PLAYER ALREADY HERE!!!');
+      //console.log('PLAYER ALREADY HERE!!!');
       let playerId = Players.find({'userId': Meteor.userId()}).fetch()[0]._id;
       return playerId;
     }
@@ -140,7 +140,7 @@ Meteor.methods({
   populateGame(currentGame){
     if(Enemies.find({'game': currentGame}).count() === 0){
       //populate
-      console.log("populating");
+      //console.log("populating");
       let pop = Math.random() * 30 + 20;
       for (var i = 0; i < pop; i++) {
         //change this to actually add zombies into the right collection
@@ -166,7 +166,7 @@ Meteor.methods({
             players[i].y > zombies[j].y - 2*zombies[j].r && players[i].y < zombies[j].y + 2*zombies[j].r){ // if circles are overlapping
 
               GamePlayers.update(players[i], {$inc: {hp: -zombies[j].damage}});
-              console.log(players[i].hp);
+              //console.log(players[i].hp);
             }
           }
           // else if(e[i].type === "zombie" && e[j].type ==="bullet"){
