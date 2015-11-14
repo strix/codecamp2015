@@ -91,15 +91,26 @@ Meteor.methods({
       sAlert.error("Yo fool.  You can't do that shiz.");
       throw new Meteor.Error("not-authorized");
     }
-    console.log('ADDING PLAYER!!!');
-    Players.insert({
-      userId: Meteor.userId(),
-      zKills: 0,
-      pKills: 0,
-      zDeaths: 0,
-      pDeaths: 0,
-      color: 'black',
-      friends: []
-    });
+    let playerExists = Players.find({'userId': Meteor.userId()}).count() > 0;
+    if(!playerExists){
+      console.log('ADDING PLAYER!!!');
+      let newPlayer = Players.insert({
+        userId: Meteor.userId(),
+        zKills: 0,
+        pKills: 0,
+        zDeaths: 0,
+        pDeaths: 0,
+        color: 'black',
+        friends: []
+      });
+      return newPlayer;
+    } else{
+      console.log('PLAYER ALREADY HERE!!!');
+      let playerId = Players.find({'userId': Meteor.userId()}).fetch()[0]._id;
+      return playerId;
+    }
+  },
+  wipePlayers(pId){
+    GamePlayers.remove({'player': pId});
   }
 });

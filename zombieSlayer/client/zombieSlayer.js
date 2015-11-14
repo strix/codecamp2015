@@ -10,6 +10,14 @@
 // });
 GamePlayers = new Mongo.Collection("gameplayers");
 
+Tracker.autorun(function(){
+  if(Meteor.userId()){
+    Meteor.call('addPlayer', (error, result) => {
+      Session.set('playerId', result);
+    });
+  }
+});
+
 Template.registerHelper('gameCount', () => {
   return Games.find().count();
 });
@@ -58,24 +66,16 @@ Accounts.ui.config({
 
 Template.newGame.rendered = () => {
   console.log('here');
-  let playerExists = Players.find({'userId': Meteor.userId()}).count() > 0;
-  // let player = Players.findOne({'userId': Meteor.userId()}, function(err, result){
-  //   if(err){
-  //     console.log(err);
-  //   }
-  //   if(result){
-  //     console.log(result);
-  //   }
-  // });
-  if(!playerExists){
-    Meteor.call('addPlayer');
-  }
-  let playerId = Players.find({'userId': Meteor.userId()}).fetch()[0]._id;
-  Meteor.call('joinPlayer', Session.get('currentGame'), playerId, (error, result) => {
+  // let playerExists = Players.find({'userId': Meteor.userId()}).count() > 0;
+  // if(!playerExists){
+  //   Meteor.call('addPlayer');
+  // }
+  // let playerId = Players.find({'userId': Meteor.userId()}).fetch()[0]._id;
+  Meteor.call('joinPlayer', Session.get('currentGame'), Session.get('playerId'), (error, result) => {
         Session.set("currentPlayerId", result);
   });
   Meteor.gameFunctions.startGame();
-  Meteor.gameFunctions.Controls(playerId);
+  Meteor.gameFunctions.Controls(Session.get('playerId'));
 
   let canvas = document.getElementById("canvas");
   let ctx = canvas.getContext('2d');
@@ -88,9 +88,10 @@ Template.newGame.rendered = () => {
       // Keep the position within the canvas
       let currentPlayer = GamePlayers.findOne(Session.get("currentPlayerId"));
       let speed = 3;
-      if(currentPlayer.name === "swoobie")
+      if(currentPlayer.screenName === "swoobie"){
         speed = 5;
-      if(currentPlayer.name === 'strix'){
+      }
+      if(currentPlayer.screenName === 'strix'){
         speed = 10;
       }
       let xpos = (currentPlayer.x < 0) ? 0 : (currentPlayer.x + speed*currentPlayer.xdir)%800;
