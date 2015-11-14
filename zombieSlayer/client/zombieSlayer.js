@@ -10,6 +10,26 @@
 // });
 GamePlayers = new Mongo.Collection("gameplayers");
 
+isKnownError = (error) => {
+  let errorName = error && error.error;
+  let listOfKnownErrors = [
+    'not-authorized',
+    'idk-error',
+    'user-not-logged-in',
+    'missing-title'
+  ];
+
+  return _.contains(listOfKnownErrors, errorName);
+};
+
+defaultErrorHandler = (error) => {
+  if (isKnownError(error)) {
+    sAlert.error(error);
+  } else if (error) {
+    sAlert.error("An unknown error occurred while saving your project.");
+  }
+};
+
 Tracker.autorun(function(){
   if(Meteor.userId()){
     Meteor.call('addPlayer', (error, result) => {
@@ -41,7 +61,9 @@ Template.game.events({
   'click .delete'(event) {
     event.preventDefault();
     event.stopPropagation();
-    Meteor.call("deleteGame", this._id);
+    Meteor.call("deleteGame", this._id, (error, result) => {
+      defaultErrorHandler(error);
+    });
   }
 });
 
@@ -52,7 +74,13 @@ Template.createGameForm.events({
     let numOption = event.target.numPlayers.options;
     let numPlayers = Number(numOption[numOption.selectedIndex].value);
     let privateGame = event.target.private.checked;
-    Meteor.call('createGame', gameTitle, numPlayers, privateGame);
+    Meteor.call('createGame', gameTitle, numPlayers, privateGame, (error, result) => {
+      if (error.error === 'missing-title') {
+        sAlert.warning(error.reason);
+      } else {
+        defaultErrorHandler(error);
+      }
+    });
     // resets the form values to their defaults (we may not want this...)
     event.target.gameTitle.value = '';
     event.target.numPlayers.selectedIndex = 0;
@@ -66,13 +94,11 @@ Accounts.ui.config({
 
 Template.newGame.rendered = () => {
   console.log('here');
-  // let playerExists = Players.find({'userId': Meteor.userId()}).count() > 0;
-  // if(!playerExists){
-  //   Meteor.call('addPlayer');
-  // }
-  // let playerId = Players.find({'userId': Meteor.userId()}).fetch()[0]._id;
   Meteor.call('joinPlayer', Session.get('currentGame'), Session.get('playerId'), (error, result) => {
-        Session.set("currentPlayerId", result);
+    defaultErrorHandler(error);
+    Session.set("currentPlayerId", result);
+    let gp = GamePlayers.findOne(Session.get('currentPlayerId')).screenName;
+    sAlert.success(`${gp} has joined the game.`);
   });
   Meteor.gameFunctions.startGame();
   Meteor.gameFunctions.Controls(Session.get('playerId'));
@@ -100,7 +126,9 @@ Template.newGame.rendered = () => {
       let xpos = (currentPlayer.x < 0) ? 0 : (currentPlayer.x + speed*currentPlayer.xdir)%800;
       let ypos = currentPlayer.y < 0 ? 0 : (currentPlayer.y + speed*currentPlayer.ydir)%800;
 
-      Meteor.call('updatePlayer', Session.get('currentPlayerId'), xpos, ypos, (error, result) => {});
+      Meteor.call('updatePlayer', Session.get('currentPlayerId'), xpos, ypos, (error, result) => {
+        defaultErrorHandler(error);
+      });
 
       ctx.clearRect(0,0,800,800);
 

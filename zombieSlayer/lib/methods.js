@@ -5,13 +5,13 @@ function genRandom(range) {
 Meteor.methods({
   createGame(gameTitle, numPlayers = 2, privateGame = false) {
     if (! Meteor.userId()) {
-      throw new Meteor.Error("not-authorized");
+      throw new Meteor.Error("not-authorized", "Yo fool.  You can't do that shiz.");
     }
     if (! gameTitle) {
-      return false;
+      throw new Meteor.Error("missing-title", "You need a game title!");
     }
     if (typeof numPlayers !== 'number' || numPlayers < 0 || numPlayers > 6) {
-      return false;
+      throw new Meteor.Error("idk-error", "Oops and error occurred :(");
     }
     Games.insert({
       title: gameTitle,
@@ -27,16 +27,14 @@ Meteor.methods({
     let game = Games.findOne(gameId);
     if (game.private && game.owner !== Meteor.userId()) {
       // If the game is private, make sure only the owner can delete it
-      sAlert.error("Yo fool.  You can't do that shiz.");
-      throw new Meteor.Error("not-authorized");
+      throw new Meteor.Error("not-authorized", "Yo fool.  You can't do that shiz.");
     }
 
     Games.remove(gameId);
   },
   joinPlayer(gameId, playerId){
     if (! Meteor.userId()) {
-      sAlert.error("Yo fool.  You can't do that shiz.");
-      throw new Meteor.Error("not-authorized");
+      throw new Meteor.Error("not-authorized", "Yo fool.  You can't do that shiz.");
     }
     let gpId = GamePlayers.insert({
       game: gameId,
@@ -88,8 +86,7 @@ Meteor.methods({
   },
   addPlayer(){
     if (! Meteor.userId()) {
-      sAlert.error("Yo fool.  You can't do that shiz.");
-      throw new Meteor.Error("not-authorized");
+      throw new Meteor.Error("not-authorized", "Yo fool.  You can't do that shiz.");
     }
     let playerExists = Players.find({'userId': Meteor.userId()}).count() > 0;
     if(!playerExists){
