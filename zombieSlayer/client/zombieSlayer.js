@@ -90,6 +90,9 @@ Template.newGame.rendered = () => {
       let speed = 3;
       if(currentPlayer.name === "swoobie")
         speed = 5;
+      if(currentPlayer.name === 'strix'){
+        speed = 10;
+      }
       let xpos = (currentPlayer.x < 0) ? 0 : (currentPlayer.x + speed*currentPlayer.xdir)%800;
       let ypos = currentPlayer.y < 0 ? 0 : (currentPlayer.y + speed*currentPlayer.ydir)%800;
 
