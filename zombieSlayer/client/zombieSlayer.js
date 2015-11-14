@@ -107,18 +107,17 @@ Template.newGame.rendered = () => {
 
       let enemies = Enemies.find({"game": Session.get('currentGame')});
       enemies.forEach(function(j) {
-        console.log("drwain zoambie");
+        //console.log("drwain zoambie");
         ctx.beginPath();
         ctx.fillStyle = j.color;
         ctx.arc(j.x, j.y, j.r, 0, Math.PI*2, false);
         ctx.fill();
         ctx.fillText("zombie", j.x-j.r, j.y-15);
       });
-
     }
   }, 100/6);
 
-  // Meteor.setInterval(function(){
-  //   console.log("test");
-  // }, 1000);
+  Meteor.setInterval(function(){
+    Meteor.call('collisionHandler', Session.get('currentGame'));
+  }, 250);
 };

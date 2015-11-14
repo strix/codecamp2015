@@ -47,7 +47,8 @@ Meteor.methods({
       xdir: 0,
       ydir: 0,
       r: 10,
-      color: 'black'
+      color: 'black',
+      hp: 100
     });
 
     return gpId;
@@ -119,7 +120,30 @@ Meteor.methods({
         });
       }
     }
-  }
+  },
+
+  collisionHandler(currentGame){
+    zombies = Enemies.find({'game': currentGame}).fetch();
+    players = GamePlayers.find({'game': currentGame}).fetch();
+    for (var i = 0; i < players.length; i++) {
+      for (var j = 0; j < zombies.length; j++) {
+        if(i !== j){
+          if(players[i].x > zombies[j].x - 2*zombies[j].r && players[i].x < zombies[j].x + 2*zombies[j].r &&
+          players[i].y > zombies[j].y - 2*zombies[j].r && players[i].y < zombies[j].y + 2*zombies[j].r){ // if circles are overlapping
+
+              GamePlayers.update(players[i], {$inc: {hp: -zombies[j].damage}});
+              console.log(players[i].hp);
+            }
+          }
+            // else if(e[i].type === "zombie" && e[j].type ==="bullet"){
+            //   //zombie takes damage
+            //   e[i].hp -= e[j].damage;
+            // }
+
+            //don't worry about other collisions right now
+        }
+      }
+    }
 
 
 });
