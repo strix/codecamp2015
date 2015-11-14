@@ -81,7 +81,7 @@ Template.newGame.rendered = () => {
   let ctx = canvas.getContext('2d');
 
   Meteor.setInterval(function() {
-      let players = GamePlayers.find({"game": Session.get('currentGame')}).fetch()
+      let players = GamePlayers.find({"game": Session.get('currentGame')}).fetch();
       if (players.length > 0){
 
 

@@ -33,4 +33,4 @@ Meteor.gameFunctions = {
       //window.addEventListener('mousemove', this.mouseMoveEvent.bind(this));
       //this.canvas.addEventListener('contextmenu', this.contextMenuEvent.bind(this));
   }
-}
+};
