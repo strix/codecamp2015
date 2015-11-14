@@ -81,17 +81,27 @@ Template.newGame.rendered = () => {
   let ctx = canvas.getContext('2d');
 
   Meteor.setInterval(function() {
-      var players = GamePlayers.find({"game": Session.get('currentGame')}).fetch()
+      let players = GamePlayers.find({"game": Session.get('currentGame')}).fetch()
       if (players.length > 0){
 
-          ctx.clearRect(0,0,800,800);
-          players.forEach(function(i) {
-            ctx.beginPath();
-            ctx.fillStyle = i.color;
-            ctx.arc(i.x, i.y, i.r, 0, Math.PI*2, false);
-            ctx.fill();
-            ctx.fillText(i.screenName, i.x-i.r, i.y-15);
-        });
-      }
-    }, 100/6);
+
+      // Keep the position within the canvas
+      let currentPlayer = GamePlayers.findOne(Session.get("currentPlayerId"));
+      let speed = 1;
+      let xpos = (currentPlayer.x < 0) ? 0 : (currentPlayer.x + speed*currentPlayer.xdir)%800;
+      let ypos = currentPlayer.y < 0 ? 0 : (currentPlayer.y + speed*currentPlayer.ydir)%800;
+
+      Meteor.call('updatePlayer', Session.get('currentPlayerId'), xpos, ypos);
+
+      ctx.clearRect(0,0,800,800);
+
+      players.forEach(function(i) {
+        ctx.beginPath();
+        ctx.fillStyle = i.color;
+        ctx.arc(i.x, i.y, i.r, 0, Math.PI*2, false);
+        ctx.fill();
+        ctx.fillText(i.screenName, i.x-i.r, i.y-15);
+      });
+    }
+  }, 100/6);
 };

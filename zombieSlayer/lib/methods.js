@@ -54,39 +54,38 @@ Meteor.methods({
   },
   //keydown events
   LEFTd(gpId){
-    GamePlayers.update(gpId, {$inc: {x: -1}});
+    GamePlayers.update(gpId, {$set: {xdir: -1}});
   },
   RIGHTd(gpId){
-    GamePlayers.update(gpId, {$inc: {x: 1}})
+    GamePlayers.update(gpId, {$set: {xdir: 1}});
   },
   UPd(gpId){
-    GamePlayers.update(gpId, {$inc: {y: -1}})
+    GamePlayers.update(gpId, {$set: {ydir: -1}});
   },
   DOWNd(gpId){
-    GamePlayers.update(gpId, {$inc: {y: 1}})
+    GamePlayers.update(gpId, {$set: {ydir: 1}});
   },
 
-  // //keyup events
-  // LEFTu(){
-  //   let playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
-  //   GamePlayers.update(Session.get("currentPlayerId"), {$set: {xdir: 0}})
-  // },
-  // RIGHTu(){
-  //   let playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
-  //   GamePlayers.update({player: playerId}, {$set: {xdir: 0}})
-  // },
-  // UPu(){
-  //   let playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
-  //   GamePlayers.update({player: playerId}, {$set: {ydir: 0}})
-  // },
-  // DOWNu(){
-  //   let playerId = Players.find({"userId": Meteor.userId()}).fetch()[0]._id;
-  //   GamePlayers.update({player: playerId}, {$set: {ydir: 0}})
-  // },
+  //keyup events
+  LEFTu(gpId){
+    GamePlayers.update(gpId, {$set: {xdir: 0}});
+  },
+  RIGHTu(gpId){
+    GamePlayers.update(gpId, {$set: {xdir: 0}});
+  },
+  UPu(gpId){
+    GamePlayers.update(gpId, {$set: {ydir: 0}});
+  },
+  DOWNu(gpId){
+    GamePlayers.update(gpId, {$set: {ydir: 0}});
+  },
 
-  // updatePlayer(i, xpos, ypos){
-  //   GamePlayers.update({player: i.player}, {$set: {x: xpos, y: ypos}});
-  // },
+  updatePlayer(gpId, xpos, ypos){
+
+
+    GamePlayers.update(gpId, {$set: {x: xpos, y: ypos}});
+  },
+
   addPlayer(){
     if (! Meteor.userId()) {
       sAlert.error("Yo fool.  You can't do that shiz.");
