@@ -15,7 +15,7 @@ var followPlayer = function(players){
       //follow code
     }
   });
-}
+};
 
 
 var shamble = function(){
@@ -31,7 +31,7 @@ var shamble = function(){
   else{
     //drool
   }
-}
+};
 
 
 function populateGame(gameId){

@@ -83,17 +83,18 @@ Meteor.methods({
 
   mouseUp(gpId, currentGame, ey, ex){
     //instatiate a bullet here
-    s = 5;
-    angle = Math.atan2(ey - GamePlayers.findOne(gpId).y, ex - GamePlayers.findOne(gpId).x);
+    let s = 5;
+    let player = GamePlayers.findOne(gpId);
+    angle = Math.atan2(ey - player.y, ex - player.x);
     Bullets.insert({
       color: "#e40b0b",
       r: 3,
       damage: 5,
       speed: s,
-      x: GamePlayers.findOne(gpId).x,
-      y: GamePlayers.findOne(gpId).y,
-      vx: Math.cos(angle)  * s,
-      vy: Math.sin(angle)  * s,
+      x: player.x,
+      y: player.y,
+      vx: Math.cos(angle) * s,
+      vy: Math.sin(angle) * s,
       game: currentGame,
       ownerId: gpId
     });
@@ -101,12 +102,12 @@ Meteor.methods({
   updatePlayer(gpId, xpos, ypos){
     GamePlayers.update(gpId, {$set: {x: xpos, y: ypos}});
   },
-  updateBullet(gpId, xpos, ypos){
+  updateBullet(bId, xpos, ypos){
     if(xpos < 0 || xpos > 800 || ypos < 0 || ypos > 800){
-      Bullets.remove(gpId);
+      Bullets.remove(bId);
     }
     else{
-      Bullets.update(gpId, {$set: {x: xpos, y: ypos}});
+      Bullets.update(bId, {$set: {x: xpos, y: ypos}});
     }
   },
   addPlayer(){
@@ -141,7 +142,7 @@ Meteor.methods({
     //populate
     //console.log("populating");
     let pop = Math.random() * 10 + 5;
-    for (var i = 0; i < pop; i++) {
+    for (let i = 0; i < pop; i++) {
       //change this to actually add zombies into the right collection
       Enemies.insert({
         x: genRandom(),
@@ -162,8 +163,8 @@ collisionHandler(currentGame){
   players = GamePlayers.find({'game': currentGame}).fetch();
   bullets = Bullets.find({'game': currentGame}).fetch();
 
-  for (var j = 0; j < zombies.length; j++) {
-    for (var i = 0; i < players.length; i++) {
+  for (let j = 0; j < zombies.length; j++) {
+    for (let i = 0; i < players.length; i++) {
       if(zombies[j].hp <= 0){
         Enemies.remove(zombies[j]);
       }
@@ -179,7 +180,7 @@ collisionHandler(currentGame){
           }
         }
       }
-      for (var i = 0; i < bullets.length; i++) {
+      for (let i = 0; i < bullets.length; i++) {
         if(bullets[i].x > zombies[j].x - 2*zombies[j].r && bullets[i].x < zombies[j].x + 2*zombies[j].r &&
           bullets[i].y > zombies[j].y - 2*zombies[j].r && bullets[i].y < zombies[j].y + 2*zombies[j].r){
             Enemies.update(zombies[j], {$inc: {hp: -bullets[i].damage}});
@@ -217,7 +218,7 @@ collisionHandler(currentGame){
     shamble(currentGame){
       zombies = Enemies.find({'game': currentGame});
       zombies.forEach(function(z) {
-        var move = Math.random() * 30;
+        let move = Math.random() * 30;
         let a = 0;
         let b = 0;
         if(move < 10){
