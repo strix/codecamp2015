@@ -18,3 +18,7 @@ Meteor.publish('gameplayers', function(){
 Meteor.publish('enemies', function(){
   return Enemies.find();
 });
+
+Meteor.publish('bullets', function(){
+  return Bullets.find();
+});

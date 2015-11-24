@@ -10,7 +10,7 @@
 // });
 GamePlayers = new Mongo.Collection("gameplayers");
 Enemies = new Mongo.Collection("enemies");
-Bullets = new Mongo.Collection("bullets", {connection: null});
+Bullets = new Mongo.Collection("bullets");
 
 
 isKnownError = (error) => {
@@ -96,8 +96,6 @@ Accounts.ui.config({
 });
 
 Template.newGame.rendered = () => {
-  console.log('here');
-
   let canvas = document.getElementById("canvas");
   let ctx = canvas.getContext('2d');
 
@@ -140,7 +138,6 @@ Template.newGame.rendered = () => {
 
       let enemies = Enemies.find({"game": Session.get('currentGame')}).fetch();
       enemies.forEach(function(j) {
-        //console.log("drwain zoambie");
         ctx.beginPath();
         ctx.fillStyle = j.color;
         ctx.arc(j.x, j.y, j.r, 0, Math.PI*2, false);
@@ -149,12 +146,10 @@ Template.newGame.rendered = () => {
 
       let bullets = Bullets.find({"game": Session.get('currentGame')}).fetch();
       bullets.forEach(function(k) {
-        //console.log("drwain zoambie");
         ctx.beginPath();
         ctx.fillStyle = k.color;
         ctx.arc(k.x, k.y, k.r, 0, Math.PI*2, false);
         ctx.fill();
-        //console.log(Bullets.find().count());
         if(k.ownerId === Session.get('currentPlayerId')){
           let bx = k.x + k.vx;
           let by = k.y + k.vy;
